@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICU 文案分支预览器</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">
+      <h1>ICU 文案分支预览器</h1>
+      <span class="subtitle">ICU MessageFormat Branch Previewer</span>
+    </div>
+    <div class="header-actions">
+      <button id="btnExport" class="btn btn-outline"
+              title="将模板、变量与全部分析结果导出为 JSON 文件">导出 JSON</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 左：输入区 -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>MessageFormat 模板</h2>
+        <span class="hint">支持嵌套 plural / select / selectordinal；<code>#</code> 表示复数数值；<code>'{</code> 转义花括号</span>
+      </div>
+      <div class="editor-wrap" id="editorWrap">
+        <pre id="highlight" aria-hidden="true"></pre>
+        {% raw %}<textarea id="template" spellcheck="false" wrap="soft"
+          placeholder="粘贴 ICU MessageFormat 模板，例如：{count, plural, one{# 条消息} other{# 条消息}}"></textarea>{% endraw %}
+      </div>
+      <div id="messages" class="messages"></div>
+
+      <div class="form-row">
+        <label class="field">
+          <span>语言环境（locale）</span>
+          <input id="locale" list="localeList" value="en" autocomplete="off">
+        </label>
+        <datalist id="localeList">
+          <option value="en"></option><option value="en-US"></option>
+          <option value="zh-Hans"></option><option value="zh-Hant"></option>
+          <option value="zh-CN"></option><option value="ja"></option>
+          <option value="ko"></option><option value="fr"></option>
+          <option value="de"></option><option value="es"></option>
+          <option value="it"></option><option value="pt"></option>
+          <option value="ru"></option><option value="uk"></option>
+          <option value="pl"></option><option value="cs"></option>
+          <option value="ar"></option><option value="he"></option>
+          <option value="hi"></option><option value="th"></option>
+          <option value="vi"></option><option value="tr"></option>
+          <option value="nl"></option><option value="sv"></option>
+        </datalist>
+        <button id="btnExtract" class="btn btn-outline"
+                title="把模板中使用到的变量自动加入下方样例列表">从模板提取变量</button>
+      </div>
+
+      <div class="panel-head">
+        <h2>变量样例</h2>
+        <span class="hint">数值自动识别；true/false 识别为布尔；其余按字符串</span>
+      </div>
+      <div id="varRows" class="var-rows"></div>
+      <button id="btnAddVar" class="btn btn-outline">＋ 添加变量</button>
+    </section>
+
+    <!-- 右：结果区 -->
+    <section class="panel">
+      <div class="panel-head">
+        <h2>样例渲染结果</h2>
+        <button id="btnCopyMain" class="btn btn-small" title="复制渲染结果">复制</button>
+      </div>
+      <div id="mainResult" class="main-result">—</div>
+      <div id="mainConds" class="chips"></div>
+
+      <div class="panel-head">
+        <h2>分支节点</h2>
+        <span id="stats" class="hint"></span>
+      </div>
+      <div id="nodes" class="nodes"></div>
+
+      <div class="panel-head">
+        <h2>可达分支路径</h2>
+        <button id="btnCopyAll" class="btn btn-small" title="复制全部路径的渲染结果">复制全部</button>
+      </div>
+      <div id="paths" class="paths"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
