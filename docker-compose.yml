@@ -1,0 +1,11 @@
+services:
+  icu-preview:
+    build: .
+    image: icu-branch-preview:latest
+    container_name: icu-branch-preview
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: "8000"
+      TZ: Asia/Shanghai
+    restart: unless-stopped

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICU 文案分支预览器</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">ICU</span>
+      <div>
+        <h1>ICU 文案分支预览器</h1>
+        <p>解析 plural / select / selectordinal 嵌套语法 · 预览所有可达分支</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button id="btn-example" class="btn btn-ghost" type="button">载入示例</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- 左列: 输入 -->
+    <section class="pane pane-input">
+      <div class="pane-head">
+        <h2>1. 模板</h2>
+        <span class="hint">支持 <code>{var}</code>、<code>{n, plural, …}</code>、<code>{g, select, …}</code>、<code>selectordinal</code>、<code>#</code>、<code>''</code> 转义</span>
+      </div>
+
+      <div class="editor-wrap">
+        <div class="gutter" id="gutter"></div>
+        <textarea id="template" spellcheck="false"
+          placeholder="{count, plural, offset:0&#10;  =0 {还没有人}&#10;  one {有 # 人}&#10;  other {有 # 人}}"></textarea>
+        <div class="hig layer" id="highlight-layer" aria-hidden="true"></div>
+        <div class="mark layer" id="mark-layer" aria-hidden="true"></div>
+      </div>
+
+      <div class="pane-head second">
+        <h2>2. 语言环境与变量样例</h2>
+        <span class="hint">locale 决定复数规则与数字 / 日期格式</span>
+      </div>
+
+      <div class="controls">
+        <label class="locale-row">
+          <span>Locale</span>
+          <input id="locale" type="text" value="zh" spellcheck="false" placeholder="zh / en / ru / ar …" />
+        </label>
+      </div>
+
+      <div class="var-wrap">
+        <div class="var-head">
+          <span class="col-name">变量</span>
+          <span class="col-type">类型</span>
+          <span class="col-sample">样例值</span>
+          <span class="col-action"></span>
+        </div>
+        <div id="var-list"></div>
+        <button id="btn-add-var" class="btn btn-ghost small" type="button">+ 添加变量</button>
+      </div>
+    </section>
+
+    <!-- 右列: 结果 -->
+    <section class="pane pane-output">
+      <div class="pane-head">
+        <h2>3. 当前样例渲染结果</h2>
+        <div class="head-badge">
+          <span id="resolved-locale" class="chip"></span>
+          <span id="coverage-chip" class="chip"></span>
+        </div>
+      </div>
+
+      <div class="render-box">
+        <pre id="rendered" class="rendered"></pre>
+        <div class="render-actions">
+          <button id="btn-copy" class="btn btn-primary" type="button">复制渲染结果</button>
+          <button id="btn-export" class="btn" type="button">导出 JSON</button>
+        </div>
+      </div>
+
+      <div id="error-panel" class="panel hidden">
+        <h3>⚠ 行内错误</h3>
+        <ul id="error-list"></ul>
+      </div>
+      <div id="warning-panel" class="panel warn hidden">
+        <h3>提示</h3>
+        <ul id="warning-list"></ul>
+      </div>
+
+      <div class="pane-head second">
+        <h2>4. 所有可达分支</h2>
+        <span class="hint">绿色 = 当前样例命中；灰色 = 未覆盖（点击任一条可定位到模板）</span>
+      </div>
+      <div id="branch-list" class="branch-list"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
